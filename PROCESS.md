@@ -1,6 +1,6 @@
 ## 1. Tech Stack Choice
 
-### What we used and why
+### What I used and why
 
 | Layer | Choice | Reason |
 |-------|--------|--------|
