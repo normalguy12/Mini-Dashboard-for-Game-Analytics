@@ -23,8 +23,8 @@ NPM: 8.17.0
 ### 1. Clone the repository
 
 ```bash
-git clone <your-repo-url>
-cd your-repo
+git clone https://github.com/normalguy12/Mini-Dashboard-for-Game-Analytics.git
+cd Mini-Dashboard-for-Game-Analytics
 ```
 
 ---
