@@ -80,27 +80,24 @@ You are the Project Manager for this project. Your full instructions are in agen
 ---
 
 #### Prompt 4 — Frontend spec
-> *Context: Planning the Next.js dashboard*
+> *Context: Building the Game Analytics dashboard*
 ```
-/opsx:propose Frontend Dashboard (Next.js):
-- Display analytics data in a table or card view
-- Show summary statistics (total, average, etc.)
-- Form to add new entry (submit to API)
-- Basic filtering or search functionality
-- Responsive layout
+/opsx:apply frontend-analytics-dashboard - follow the spec from OpenSpec, combine with the tasks deliver by Project Manager below to get the best result
+
+*** Here I paste the task reports from Project Manager Agent ***
 ```
-**Result:** Generated 5 component specs (`SummaryStats`, `AnalyticsTable`, `FilterBar`, `AddEntryForm`, `ChartSection`) with scenario-level requirements.
+**Result:** Frontend Agent both follow instruction from Project Manager and proposal for the feature that I used OpenSpec to help prompting before => Every component is built perfectly. Except one small thing that I need to fix is the bar chart at first get some errors in displaying.
 
 ---
 
-#### Prompt 5 — Custom hooks
-> *Context: Wiring frontend data fetching*
+#### Prompt 5 — Backend Spec
+> *Context: Building the backend for Game Analytics dashboard*
 ```
-Create useAnalytics(filters: FilterParams) hook that calls fetchAnalytics(filters),
-returns { data, total, loading, error, refresh }, re-fetches when filters change,
-and is React StrictMode safe (no double-fetch side effects).
+/opsx:apply backend-analytics-api - follow the spec from OpenSpec, combine with the tasks deliver by Project Manager below to get the best result
+
+*** Here I paste the task reports from Project Manager Agent ***
 ```
-**Result:** Hook using `useEffect` with primitive filter values in dependency array — prevented stale closure bugs.
+**Result:** Same as Frontend, Backend Agent both follow instruction from Project Manager and proposal for the feature that I used OpenSpec to help prompting before => Every module is built exactly as I expected and I carefully double check them to make sure for the integration.
 
 ---
 
@@ -112,7 +109,11 @@ and is React StrictMode safe (no double-fetch side effects).
 - Handle loading/error states properly
 - Data flows correctly between frontend and backend
 ```
-**Result:** Identified 5 integration gaps not covered by individual specs — most importantly, isolated error states per component so a summary failure doesn't crash the table.
+After that, transfer to Project Manager Agent, modify prompt 4 for Frontend Agent to integrate, combine `openspec/frontend-backend-integration` and Project Manager Agent's tasks deliver
+```
+/opsx:apply frontend-backend-integration
+```
+**Result:** This helped to identify integration gaps not covered by individual specs — most importantly, isolated error states per component so a summary failure doesn't crash the table.
 
 ---
 
@@ -127,47 +128,13 @@ Add methods, credentials, and allowedHeaders.
 
 ---
 
-#### Prompt 8 — Error boundary component
-> *Context: Needed isolated error handling per section*
-```
-Create a React ErrorBoundary class component that catches render errors,
-shows a fallback UI with the error message and a "Try again" button,
-and resets on button click.
-```
-**Result:** `ErrorBoundary.tsx` with `componentDidCatch`, `getDerivedStateFromError`, and a reset mechanism.
-
----
-
-#### Prompt 9 — README generation
-> *Context: Writing project documentation*
-```
-Write README.md with: prerequisites (Node version), how to run backend, how to run frontend,
-API endpoints documentation with request/response examples for all 3 endpoints,
-project structure tree, and tech stack table.
-```
-**Result:** Complete README in one pass — zero manual editing needed.
-
----
-
-#### Prompt 10 — PM task review
-> *Context: Before handing tasks to engineers*
-```
-Review both backend and frontend task lists against the original requirements.
-Check for gaps, conflicts, ordering issues, and risks.
-Give APPROVED / APPROVED WITH NOTES / NEEDS REVISION verdict.
-Produce handover messages for each engineer session.
-```
-**Result:** PM caught a missing task — `GET /analytics/summary` route ordering was not explicitly flagged as a risk. Added task 5.2 note before implementation.
-
----
-
 ### What worked well with AI assistance
 - **Spec-first development** — generating specs before code forced clarity on requirements early
 - **Boilerplate elimination** — DTOs, interfaces, module wiring took seconds instead of minutes
 - **Cross-cutting concern detection** — the integration spec pass caught bugs that neither the backend nor frontend spec had covered
 - **Consistent naming** — AI maintained the same field names (`gameId`, `eventType`, `playerId`) across all layers without drift
 
-### What didn't work / how we fixed it
+### What didn't work / how I fixed it
 
 | Problem | What AI got wrong | Fix |
 |---------|------------------|-----|
@@ -178,7 +145,7 @@ Produce handover messages for each engineer session.
 
 ### Time saved estimate
 > Without AI assistance, estimated time: **12–16 hours**  
-> With AI assistance, actual time: **~4 hours**  
+> With AI assistance, actual time: **~3 hours**  
 > **~70% time reduction** on boilerplate, spec writing, and documentation
 
 ---
@@ -192,29 +159,29 @@ Produce handover messages for each engineer session.
    └── Read requirements → define API contract → write agent prompts
    └── /opsx:propose for backend, frontend, integration → reviewed by PM agent
 
-2. BACKEND SETUP (45 min)
+2. BACKEND SETUP (10 min)
    └── nest new backend → install deps → configure main.ts (CORS, port, ValidationPipe)
    └── Scaffold AnalyticsModule → implement service (seed + logic) → controller
    └── Manual test via curl
 
-3. FRONTEND SETUP (60 min)
+3. FRONTEND SETUP (15 min)
    └── npx create-next-app frontend → install Tailwind + Recharts
    └── Create lib/types.ts, lib/api.ts
    └── Build hooks: useAnalytics, useSummary
    └── Build components: SummaryStats, AnalyticsTable, FilterBar, AddEntryForm, ChartSection
    └── Wire page.tsx
 
-4. INTEGRATION (45 min)
+4. INTEGRATION (30 min)
    └── /opsx:apply frontend-backend-integration
    └── Fix CORS, fix SummaryStats prop drilling, fix filter hook deps
    └── End-to-end manual verification checklist (tasks 8.1–8.8)
 
-5. TESTING & POLISH (30 min)
+5. TESTING & POLISH (45 min)
    └── Unit tests for service methods
    └── Error state testing (kill backend, check UI)
    └── Responsive check at 375px and 1280px
 
-6. DOCUMENTATION (20 min)
+6. DOCUMENTATION (50 min)
    └── Write README.md via AI prompt
    └── Write PROCESS.md (this file)
 ```
@@ -224,12 +191,12 @@ Produce handover messages for each engineer session.
 | Phase | Time |
 |-------|------|
 | Planning & spec | 30 min |
-| Backend implementation | 45 min |
-| Frontend implementation | 60 min |
-| Integration & bug fixes | 45 min |
-| Testing | 30 min |
-| Documentation | 20 min |
-| **Total** | **~3h 50min** |
+| Backend implementation | 10 min |
+| Frontend implementation | 15 min |
+| Integration & bug fixes | 30 min |
+| Testing | 45 min |
+| Documentation | 50 min |
+| **Total** | **~3h** |
 
 ---
 
@@ -237,23 +204,15 @@ Produce handover messages for each engineer session.
 
 ### Key decisions
 
-#### 1. Prop-driven components over self-fetching components
-**Decision:** `SummaryStats`, `AnalyticsTable` receive data as props — they do not fetch internally.  
-**Why:** Parent page controls when refreshes happen. After a POST, both table and summary refresh in one `handleSuccess()` call. Self-fetching components would require prop drilling a trigger signal anyway.
-
-#### 2. Primitive values in `useEffect` dependency arrays
-**Decision:** `useEffect(() => { ... }, [filters.gameId, filters.eventType])` instead of `[filters]`.  
-**Why:** Object identity in React — a new `filters` object reference on every render would cause infinite re-fetch. Primitives are value-compared.
-
-#### 3. Route declaration order in NestJS controller
+#### 1. Route declaration order in NestJS controller
 **Decision:** `GET /analytics/summary` is declared before any route with a dynamic parameter.  
 **Why:** NestJS resolves routes top-to-bottom. If `/:id` is declared first, `/summary` matches as `id = "summary"` and throws a 404 or wrong handler.
 
-#### 4. Single `lib/api.ts` gateway
+#### 2. Single `lib/api.ts` gateway
 **Decision:** All API calls go through typed functions in `lib/api.ts`. No component calls `fetch()` directly.  
 **Why:** Single place to change base URL, add auth headers, or swap to axios. Error normalisation (`ApiError`) happens once.
 
-#### 5. In-memory store with `onModuleInit` seed
+#### 3. In-memory store with `onModuleInit` seed
 **Decision:** No database, no file persistence.  
 **Why:** Meets requirements, zero infrastructure setup. Data resets on server restart — acceptable for a demo/test scenario.
 
