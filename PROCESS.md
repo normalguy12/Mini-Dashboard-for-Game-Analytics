@@ -4,10 +4,10 @@
 
 | Layer | Choice | Reason |
 |-------|--------|--------|
-| **Backend Framework** | NestJS (TypeScript) | Structured, opinionated — forces clean module/service/controller separation out of the box. Built-in `ValidationPipe` + `class-validator` makes DTO validation trivial |
-| **Frontend Framework** | Next.js 16 (App Router) | React with file-based routing, server/client component model, and first-class TypeScript support. Better DX than raw CRA/Vite for a dashboard |
-| **Styling** | Tailwind CSS | Utility-first — no context switching between CSS files. Responsive layout via breakpoint prefixes (`sm:`, `lg:`) is fast to write |
-| **Charts** | Recharts | Lightweight, React-native chart library. No heavy D3 setup needed for this scope |
+| **Backend Framework** | NestJS (TypeScript) | Structured and clean module/service/controller components. Built-in `ValidationPipe` + `class-validator` makes DTO validation trivial |
+| **Frontend Framework** | Next.js 16 (App Router) | React with file-based routing, server/client component model, and first-class TypeScript support. I am most familiar with Next.js and React, so I choose this framework to build our Frontend |
+| **Styling** | Tailwind CSS | Utility-first — no context switching between CSS files. Responsive layout via breakpoint prefixes (`sm:`, `lg:`) is simple and easy for this project |
+| **Charts** | Recharts | Lightweight, React-native chart library. Easy to setup and use |
 | **Validation** | class-validator + class-transformer | Pairs perfectly with NestJS `ValidationPipe`. Declarative decorators on DTOs — no manual if/else validation |
 | **HTTP Client** | Native `fetch` (wrapped in `lib/api.ts`) | No extra dependency. `AbortController` for timeout. Keeps bundle lean |
 | **Storage** | In-memory array + `onModuleInit` seed | Meets the requirement, zero config, instant restart. No Docker/DB setup friction |
@@ -15,58 +15,67 @@
 
 ### Alternatives considered
 
-| What | Alternative | Why rejected |
-|------|-------------|--------------|
-| Backend | Express.js | Less structure for a multi-endpoint API. Would need to wire validation manually |
-| Frontend | Vite + React SPA | No SSR benefit here, but Next.js App Router is the current standard — better long-term |
-| Styling | CSS Modules / Styled Components | More verbose for responsive layout. Tailwind is faster for dashboard UIs |
-| Charts | Chart.js | Requires canvas refs and imperative API — less idiomatic in React |
-| HTTP Client | Axios | Adds ~15KB for no meaningful benefit over `fetch` at this scale |
-| Storage | JSON file on disk | More persistent but adds `fs` complexity and race conditions on concurrent writes |
+| What | Alternative |
+|------|-------------|
+| Backend | Express.js |
+| Frontend | Vite, Angular,... |
+| Styling | CSS Modules / Styled Components |
+| Charts | Chart.js |
+| HTTP Client | Axios |
+| Storage | JSON file on local disk |
 
 ---
 
 ## 2. AI Tool Usage
 
 ### Tools used
-- **GitHub Copilot** (VS Code) — inline completions, refactoring suggestions
 - **Copilot Chat / Claude Sonnet 4.6/ OpenSpec-@FissionAI** — architecture planning, prompt-driven scaffolding via `/opsx:propose` and `/opsx:apply` commands
 
 ---
 
 ### 5–10 Real Prompts Used (with context)
 
-#### Prompt 1 — Initial scaffold
+#### Prompt 1 — Initial Setting
 > *Context: Starting the project from scratch*
 ```
-/opsx:propose Backend API (NestJS):
+/opsx:propose 
+Backend API (NestJS):
 - REST API with at least 3 endpoints: GET /analytics, POST /analytics, GET /analytics/summary
 - Use in-memory storage
 - Basic validation and error handling
+Frontend Dashboard (Next.js + React)
+- Display analytics data in a table or card view
+- Show summary statistics (total, average, etc.)
+- Form to add new entry (submit to API)
+- Basic filtering or search functionality
+- Responsive layout (doesn't need to be fancy)
+
+Following the folder structure below:
+your-repo/
+├── backend/ # NestJS/Express API
+├── frontend/ # React app
+├── README.md # Setup instructions
+└── PROCESS.md # Your process documentation
 ```
-**Result:** Generated `proposal.md`, `design.md`, `specs/`, and `tasks.md` under `openspec/changes/backend-analytics-api/` — full spec before writing a single line of code.
+**Result:** Generated `proposal.md`, `design.md`, `specs/`, and `tasks.md` under `openspec/changes/backend-analytics-api/` and `openspec/changes/frontend-analytics-dashboard/` — full spec before writing a single line of code.
 
 ---
 
-#### Prompt 2 — NestJS controller generation
-> *Context: Implementing the analytics controller*
+#### Prompt 2 — Roles Setting
+> *Context: I granted roles for 3 individual agent, each stands for a role in the team, including: Project Manager Agent, Backend Engineer Agent and Frontend Engineer Agent*
 ```
-Generate a NestJS controller for analytics with GET /analytics (with query filters),
-POST /analytics (returns 201), and GET /analytics/summary.
-GET /analytics/summary must be declared BEFORE any /:id route to avoid route conflicts.
+Establish suitable prompts for each individual agent of the team, including 3 role: Project Manager, Frontend Engineer and Backend Engineer. All of these agents are experts in their field (Senior Level with 7+ years of experience) and put 100% effort in this project, because they are in need of 1 million dollar paycheck to save their families from the kidnappers.
 ```
-**Result:** Clean controller with correct route ordering, `@Query()` + `@Body()` decorators, and `@HttpCode(HttpStatus.CREATED)`.
+**Result:** Each agent knows their role well and optimize the whole process to avoid as many errors as possible`.
 
 ---
 
-#### Prompt 3 — In-memory seed data
-> *Context: Needed realistic test data for the dashboard*
+#### Prompt 3 — Project Analysis
+> *Context: Provide Context and Requirements for the Project Manager Agent to help me analyze the project*
 ```
-Implement onModuleInit() in AnalyticsService to seed at least 10 realistic entries
-with varied gameId (3 games), eventType (level_complete, session_start, session_end, purchase),
-playerId, score, duration, and timestamp spread over the last 30 days.
+You are the Project Manager for this project. Your full instructions are in agents/project-manager.md. Read it and confirm your role, then read `openspec/changes/backend-analytics-api/` and `openspec/changes/frontend-analytics-dashboard/` to analyze the upcoming tasks for Backend and Frontend. Finally, deliver the suitable tasks for the team.
 ```
-**Result:** 12 seeded entries with natural variation — immediately made the dashboard look realistic on first load.
+**Result:** Accurate Analysis and Task Breakdown, however, there is one point that it is getting overcomplicated when getting to set up the database. Due to the requirement, we don't need to setup a complex one, just need use-in memory storage or simple JSON file, so I have to refactor the final result analysis report and review again, then start to deliver task for backend and frontend agents.`
 
 ---
 
