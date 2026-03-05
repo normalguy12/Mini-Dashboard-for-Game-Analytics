@@ -1,6 +1,10 @@
 # 🎮 Game Analytics Dashboard
 
 A mini full-stack dashboard for game analytics with real-time data, CRUD operations, and summary statistics.
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/ade4b415-d1ac-46b2-a37a-5bd1c3aa33f3" />
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/931e4729-17cb-45a6-8e30-cd2ac912e82c" />
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/d3b53e4d-fe59-4b14-b628-bbec532e0e0e" />
+
 
 ---
 
