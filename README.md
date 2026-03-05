@@ -60,9 +60,6 @@ Create a `.env.local` file inside the `frontend/` folder:
 # frontend/.env.local
 NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
-
-> A template is provided at `frontend/.env.local.example`
-
 ---
 
 ## 📡 API Endpoints
